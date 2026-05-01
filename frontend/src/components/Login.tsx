@@ -22,7 +22,6 @@ function Login() {
   useEffect(() => {
     localStorage.removeItem('jwt')
     localStorage.removeItem('user')
-    localStorage.removeItem('coachPalUser')
   }, [])
   const [submitError, setSubmitError] = useState('')
 
@@ -44,7 +43,6 @@ function Login() {
       const response = await loginUser(data)
       localStorage.setItem('jwt', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
-      localStorage.setItem('coachPalUser', JSON.stringify(response.user))
       window.location.href = '/home'
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {

@@ -1,12 +1,13 @@
 import { Box, Button, Container, Paper, Stack, Typography } from '@mui/material'
 
 function Home() {
-  const storedUser = localStorage.getItem('coachPalUser')
+  const storedUser = localStorage.getItem('user')
   const user = storedUser ? JSON.parse(storedUser) : null
   const displayName = user ? `${user.firstName} ${user.lastName}` : 'Coach'
 
   const handleLogout = () => {
-    localStorage.removeItem('coachPalUser')
+    localStorage.removeItem('jwt')
+    localStorage.removeItem('user')
     window.location.href = '/login'
   }
 
