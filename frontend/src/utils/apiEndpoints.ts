@@ -54,6 +54,8 @@ export const apiEndpoints = {
   },
   bodyMeasurements: {
     me: '/api/body-measurements/me',
+    byTraineeId: (traineeId: string) =>
+      `/api/body-measurements/trainee/${traineeId}`,
   },
 } as const
 
@@ -124,6 +126,7 @@ export type BodyMeasurementResponse = {
   traineeId: string
   coachId: string
   date: string
+  measurementDates?: string[]
   height?: number
   weight?: number[]
   bodyFatPercentage?: number[]
@@ -140,6 +143,19 @@ export type BodyMeasurementResponse = {
 export type MyBodyMeasurementsResponse = {
   traineeProfile: TraineeResponse
   measurements: BodyMeasurementResponse | null
+}
+
+export type BodyMeasurementUpdatePayload = {
+  date: string
+  height?: number
+  weight?: number
+  bodyFatPercentage?: number
+  chest?: number
+  waist?: number
+  hip?: number
+  thigh?: number
+  arm?: number
+  notes?: string
 }
 
 export const loginUser = async (payload: LoginPayload) => {
@@ -179,6 +195,14 @@ export const getTrainees = async () => {
   return response.data
 }
 
+export const getTraineeById = async (id: string) => {
+  const response = await apiClient.get<TraineeResponse>(
+    apiEndpoints.trainees.byId(id),
+  )
+
+  return response.data
+}
+
 export const createTrainee = async (payload: CreateTraineePayload) => {
   const response = await apiClient.post<TraineeResponse>(
     apiEndpoints.trainees.base,
@@ -191,6 +215,26 @@ export const createTrainee = async (payload: CreateTraineePayload) => {
 export const getMyBodyMeasurements = async () => {
   const response = await apiClient.get<MyBodyMeasurementsResponse>(
     apiEndpoints.bodyMeasurements.me,
+  )
+
+  return response.data
+}
+
+export const getBodyMeasurementsByTraineeId = async (traineeId: string) => {
+  const response = await apiClient.get<{ measurements: BodyMeasurementResponse | null }>(
+    apiEndpoints.bodyMeasurements.byTraineeId(traineeId),
+  )
+
+  return response.data
+}
+
+export const updateBodyMeasurementsByTraineeId = async (
+  traineeId: string,
+  payload: BodyMeasurementUpdatePayload,
+) => {
+  const response = await apiClient.patch<BodyMeasurementResponse>(
+    apiEndpoints.bodyMeasurements.byTraineeId(traineeId),
+    payload,
   )
 
   return response.data

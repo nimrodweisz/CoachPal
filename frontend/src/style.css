@@ -119,6 +119,10 @@ select {
   stroke-width: 3;
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
 .login-card {
   padding: 40px;
   border: 1px solid #d5e1dd;

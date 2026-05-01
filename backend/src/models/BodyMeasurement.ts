@@ -21,6 +21,10 @@ const bodyMeasurementSchema = new Schema(
       type: Date,
       required: true,
     },
+    measurementDates: {
+      type: [{ type: Date }],
+      default: undefined,
+    },
     height: {
       type: Number,
     },

@@ -14,11 +14,13 @@ import {
   TableRow,
   Typography,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import AddTraineeModal from '../modals/AddTraineeModal'
 import { getTrainees, type TraineeResponse } from '../utils/apiEndpoints'
 import TraineeHome from './TraineeHome'
 
 function Home() {
+  const navigate = useNavigate()
   const storedUser = localStorage.getItem('user')
   const user = storedUser ? JSON.parse(storedUser) : null
   const displayName = user ? `${user.firstName} ${user.lastName}` : 'Coach'
@@ -62,6 +64,10 @@ function Home() {
     localStorage.removeItem('jwt')
     localStorage.removeItem('user')
     window.location.href = '/login'
+  }
+
+  const handleTraineeClick = (traineeId: string) => {
+    navigate(`/trainee/${traineeId}`)
   }
 
   return (
@@ -124,7 +130,12 @@ function Home() {
                   ) : null}
 
                   {trainees.map((trainee) => (
-                    <TableRow hover key={trainee._id}>
+                    <TableRow
+                      className="clickable-row"
+                      hover
+                      key={trainee._id}
+                      onClick={() => handleTraineeClick(trainee._id)}
+                    >
                       <TableCell>
                         {trainee.userId
                           ? `${trainee.userId.firstName} ${trainee.userId.lastName}`
