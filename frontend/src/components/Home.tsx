@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import AddTraineeModal from '../modals/AddTraineeModal'
 import { getTrainees, type TraineeResponse } from '../utils/apiEndpoints'
+import TraineeHome from './TraineeHome'
 
 function Home() {
   const storedUser = localStorage.getItem('user')
@@ -25,6 +26,10 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+
+  if (user?.role === 'Trainee') {
+    return <TraineeHome />
+  }
 
   const loadTrainees = async () => {
     try {

@@ -52,6 +52,9 @@ export const apiEndpoints = {
     base: '/api/trainees',
     byId: (id: string) => `/api/trainees/${id}`,
   },
+  bodyMeasurements: {
+    me: '/api/body-measurements/me',
+  },
 } as const
 
 export type CreateUserPayload = {
@@ -116,6 +119,29 @@ export type CreateTraineePayload = {
   notes?: string
 }
 
+export type BodyMeasurementResponse = {
+  _id: string
+  traineeId: string
+  coachId: string
+  date: string
+  height?: number
+  weight?: number[]
+  bodyFatPercentage?: number[]
+  chest?: number[]
+  waist?: number[]
+  hip?: number[]
+  thigh?: number[]
+  arm?: number[]
+  notes?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type MyBodyMeasurementsResponse = {
+  traineeProfile: TraineeResponse
+  measurements: BodyMeasurementResponse | null
+}
+
 export const loginUser = async (payload: LoginPayload) => {
   const response = await apiClient.post<LoginResponse>(
     apiEndpoints.auth.login,
@@ -157,6 +183,14 @@ export const createTrainee = async (payload: CreateTraineePayload) => {
   const response = await apiClient.post<TraineeResponse>(
     apiEndpoints.trainees.base,
     payload,
+  )
+
+  return response.data
+}
+
+export const getMyBodyMeasurements = async () => {
+  const response = await apiClient.get<MyBodyMeasurementsResponse>(
+    apiEndpoints.bodyMeasurements.me,
   )
 
   return response.data

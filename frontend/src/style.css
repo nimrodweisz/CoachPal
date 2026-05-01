@@ -66,6 +66,59 @@ select {
   font-weight: 800;
 }
 
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.chart-card,
+.empty-state {
+  padding: 22px;
+  border: 1px solid #d8e2df;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.chart-title {
+  margin: 0;
+  color: #172033;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.chart-value {
+  margin: 4px 0 0;
+  color: #0d6b57;
+  font-size: 1.65rem;
+  font-weight: 800;
+}
+
+.progress-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-axis {
+  stroke: #d8e2df;
+  stroke-width: 2;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #0d6b57;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.chart-point {
+  fill: #ffffff;
+  stroke: #0d6b57;
+  stroke-width: 3;
+}
+
 .login-card {
   padding: 40px;
   border: 1px solid #d5e1dd;
