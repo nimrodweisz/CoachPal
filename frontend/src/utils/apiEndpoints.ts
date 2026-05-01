@@ -25,6 +25,16 @@ apiClient.interceptors.response.use(
   },
 )
 
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('jwt')
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+
+  return config
+})
+
 export const apiEndpoints = {
   auth: {
     login: '/api/auth/login',
@@ -38,6 +48,10 @@ export const apiEndpoints = {
     base: '/api/coach-profiles',
     byId: (id: string) => `/api/coach-profiles/${id}`,
   },
+  trainees: {
+    base: '/api/trainees',
+    byId: (id: string) => `/api/trainees/${id}`,
+  },
 } as const
 
 export type CreateUserPayload = {
@@ -46,7 +60,7 @@ export type CreateUserPayload = {
   email: string
   password: string
   phone: string
-  role: 'Coach'
+  role: 'Coach' | 'Trainee'
 }
 
 export type UserResponse = CreateUserPayload & {
@@ -69,6 +83,37 @@ export type LoginResponse = {
 export type CreateCoachProfilePayload = {
   userId: string
   bio: string
+}
+
+export type TraineeResponse = {
+  _id: string
+  traineeEmail: string
+  userId?: {
+    _id: string
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+  }
+  coachId: string
+  birthDate: string
+  gender: 'Male' | 'Female' | 'Other'
+  goal: string
+  status: 'Active' | 'Inactive'
+  startDate: string
+  notes?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type CreateTraineePayload = {
+  email: string
+  birthDate: string
+  gender: 'Male' | 'Female' | 'Other'
+  goal: string
+  status: 'Active' | 'Inactive'
+  startDate: string
+  notes?: string
 }
 
 export const loginUser = async (payload: LoginPayload) => {
@@ -94,6 +139,23 @@ export const createCoachProfile = async (
 ) => {
   const response = await apiClient.post(
     apiEndpoints.coachProfiles.base,
+    payload,
+  )
+
+  return response.data
+}
+
+export const getTrainees = async () => {
+  const response = await apiClient.get<TraineeResponse[]>(
+    apiEndpoints.trainees.base,
+  )
+
+  return response.data
+}
+
+export const createTrainee = async (payload: CreateTraineePayload) => {
+  const response = await apiClient.post<TraineeResponse>(
+    apiEndpoints.trainees.base,
     payload,
   )
 

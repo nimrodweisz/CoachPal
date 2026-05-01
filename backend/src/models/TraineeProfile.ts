@@ -5,8 +5,14 @@ const traineeProfileSchema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
       unique: true,
+      sparse: true,
+    },
+    traineeEmail: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
     coachId: {
       type: Schema.Types.ObjectId,
@@ -47,6 +53,8 @@ const traineeProfileSchema = new Schema(
     timestamps: true,
   },
 )
+
+traineeProfileSchema.index({ traineeEmail: 1 }, { unique: true })
 
 export type TraineeProfile = InferSchemaType<typeof traineeProfileSchema>
 

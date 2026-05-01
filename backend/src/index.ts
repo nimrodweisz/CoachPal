@@ -4,6 +4,7 @@ import express from 'express'
 import mongoose from 'mongoose'
 import authRoutes from './routes/authRoutes.js'
 import coachProfileRoutes from './routes/coachProfileRoutes.js'
+import traineeProfileRoutes from './routes/traineeProfileRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 
 dotenv.config()
@@ -35,6 +36,7 @@ app.use(express.json())
 app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/coach-profiles', coachProfileRoutes)
+app.use('/api/trainees', traineeProfileRoutes)
 
 app.get('/health', (_req, res) => {
   res.json({

@@ -20,7 +20,7 @@ type SignupFormValues = {
   email: string
   password: string
   phone: string
-  role: 'Coach'
+  role: 'Coach' | 'Trainee'
   bio: string
 }
 
@@ -31,6 +31,7 @@ function Signup() {
     formState: { errors, isSubmitting },
     handleSubmit,
     register,
+    watch,
   } = useForm<SignupFormValues>({
     defaultValues: {
       firstName: '',
@@ -43,6 +44,8 @@ function Signup() {
     },
   })
 
+  const selectedRole = watch('role')
+
   const onSubmit: SubmitHandler<SignupFormValues> = async (data) => {
     setSubmitError('')
 
@@ -50,10 +53,12 @@ function Signup() {
       const { bio, ...userPayload } = data
       const user = await createUser(userPayload)
 
-      await createCoachProfile({
-        userId: user._id,
-        bio,
-      })
+      if (data.role === 'Coach') {
+        await createCoachProfile({
+          userId: user._id,
+          bio,
+        })
+      }
 
       window.location.href = '/login'
     } catch (error) {
@@ -153,22 +158,25 @@ function Signup() {
                 })}
               >
                 <MenuItem value="Coach">Coach</MenuItem>
+                <MenuItem value="Trainee">Trainee</MenuItem>
               </TextField>
 
-              <TextField
-                error={Boolean(errors.bio)}
-                fullWidth
-                helperText={errors.bio?.message}
-                label="Bio"
-                minRows={3}
-                multiline
-                {...register('bio', {
-                  maxLength: {
-                    value: 500,
-                    message: 'Bio must be 500 characters or less',
-                  },
-                })}
-              />
+              {selectedRole === 'Coach' ? (
+                <TextField
+                  error={Boolean(errors.bio)}
+                  fullWidth
+                  helperText={errors.bio?.message}
+                  label="Bio"
+                  minRows={3}
+                  multiline
+                  {...register('bio', {
+                    maxLength: {
+                      value: 500,
+                      message: 'Bio must be 500 characters or less',
+                    },
+                  })}
+                />
+              ) : null}
 
               <TextField
                 autoComplete="new-password"

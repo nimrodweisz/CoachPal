@@ -1,14 +1,15 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt, { type JwtPayload } from 'jsonwebtoken'
+import type { Types } from 'mongoose'
 import User from '../models/User.js'
 
 type AuthenticatedUser = {
-  _id: unknown
+  _id: Types.ObjectId
   firstName: string
   lastName: string
   email: string
   phone: string
-  role: 'Coach'
+  role: 'Coach' | 'Trainee'
   isActive: boolean
   createdAt: Date
   updatedAt: Date

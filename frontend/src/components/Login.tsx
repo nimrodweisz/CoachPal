@@ -20,8 +20,7 @@ type LoginFormValues = {
 
 function Login() {
   useEffect(() => {
-    localStorage.removeItem('jwt')
-    localStorage.removeItem('user')
+    localStorage.clear()
   }, [])
   const [submitError, setSubmitError] = useState('')
 
