@@ -12,6 +12,7 @@ import {
 import axios from 'axios'
 import { useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useToast } from '../hooks/useToast'
 import { createCoachProfile, createUser } from '../utils/apiEndpoints'
 
 type SignupFormValues = {
@@ -25,6 +26,7 @@ type SignupFormValues = {
 }
 
 function Signup() {
+  const { showError, showSuccess } = useToast()
   const [submitError, setSubmitError] = useState('')
 
   const {
@@ -60,18 +62,21 @@ function Signup() {
         })
       }
 
+      showSuccess('Account created')
       window.location.href = '/login'
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
         console.error(error.response?.data ?? error.message)
-        setSubmitError(
-          error.response?.data?.message ?? 'Could not create your account',
-        )
+        const message =
+          error.response?.data?.message ?? 'Could not create your account'
+        setSubmitError(message)
+        showError(message)
         return
       }
 
       console.error(error)
       setSubmitError('Could not create your account')
+      showError('Could not create your account')
     }
   }
 

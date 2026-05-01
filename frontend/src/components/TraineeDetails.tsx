@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { useNavigate, useParams } from 'react-router-dom'
 import BodyMeasurementsModal from '../modals/BodyMeasurementsModal'
+import ProgressCharts from './ProgressCharts'
 import {
   getBodyMeasurementsByTraineeId,
   getTraineeById,
@@ -111,6 +112,13 @@ function TraineeDetails() {
                   />
                 </Box>
               </Stack>
+            ) : null}
+
+            {!isLoading ? (
+              <ProgressCharts
+                emptyCopy="Measurements will appear here after you add them."
+                measurements={measurements}
+              />
             ) : null}
           </Stack>
         </Paper>

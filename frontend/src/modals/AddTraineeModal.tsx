@@ -16,6 +16,7 @@ import {
   type CreateTraineePayload,
   type TraineeResponse,
 } from '../utils/apiEndpoints'
+import { useToast } from '../hooks/useToast'
 
 type AddTraineeModalProps = {
   onClose: () => void
@@ -24,6 +25,7 @@ type AddTraineeModalProps = {
 }
 
 function AddTraineeModal({ onClose, onCreated, open }: AddTraineeModalProps) {
+  const { showError, showSuccess } = useToast()
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -51,6 +53,7 @@ function AddTraineeModal({ onClose, onCreated, open }: AddTraineeModalProps) {
     try {
       const trainee = await createTrainee(data)
       onCreated(trainee)
+      showSuccess('Trainee added')
       handleClose()
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
@@ -60,6 +63,7 @@ function AddTraineeModal({ onClose, onCreated, open }: AddTraineeModalProps) {
       setError('root', {
         message: message ?? 'Could not create trainee',
       })
+      showError(message ?? 'Could not create trainee')
     }
   }
 

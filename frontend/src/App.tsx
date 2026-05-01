@@ -10,6 +10,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import TraineeDetails from './components/TraineeDetails'
+import { ToastProvider } from './hooks/useToast'
 
 function UnauthorizedRedirectHandler() {
   const navigate = useNavigate()
@@ -38,14 +39,16 @@ function UnauthorizedRedirectHandler() {
 function App() {
   return (
     <BrowserRouter>
-      <UnauthorizedRedirectHandler />
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/trainee/:id" element={<TraineeDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+      <ToastProvider>
+        <UnauthorizedRedirectHandler />
+        <Routes>
+          <Route path="/home" element={<Home />} />
+          <Route path="/trainee/:id" element={<TraineeDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </ToastProvider>
     </BrowserRouter>
   )
 }

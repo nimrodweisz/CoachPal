@@ -11,6 +11,7 @@ import {
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useToast } from '../hooks/useToast'
 import { loginUser } from '../utils/apiEndpoints'
 
 type LoginFormValues = {
@@ -19,6 +20,8 @@ type LoginFormValues = {
 }
 
 function Login() {
+  const { showError, showSuccess } = useToast()
+
   useEffect(() => {
     localStorage.clear()
   }, [])
@@ -42,16 +45,18 @@ function Login() {
       const response = await loginUser(data)
       localStorage.setItem('jwt', response.token)
       localStorage.setItem('user', JSON.stringify(response.user))
+      showSuccess('Signed in successfully')
       window.location.href = '/home'
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
-        setSubmitError(
-          error.response?.data?.message ?? 'Could not sign in',
-        )
+        const message = error.response?.data?.message ?? 'Could not sign in'
+        setSubmitError(message)
+        showError(message)
         return
       }
 
       setSubmitError('Could not sign in')
+      showError('Could not sign in')
     }
   }
 

@@ -15,6 +15,7 @@ import {
   type BodyMeasurementResponse,
   type BodyMeasurementUpdatePayload,
 } from '../utils/apiEndpoints'
+import { useToast } from '../hooks/useToast'
 
 type BodyMeasurementsModalProps = {
   onClose: () => void
@@ -45,6 +46,7 @@ function BodyMeasurementsModal({
   open,
   traineeId,
 }: BodyMeasurementsModalProps) {
+  const { showError, showSuccess } = useToast()
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -91,6 +93,7 @@ function BodyMeasurementsModal({
         payload,
       )
       onSaved(measurements)
+      showSuccess('Measurements saved')
       handleClose()
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
@@ -100,6 +103,7 @@ function BodyMeasurementsModal({
       setError('root', {
         message: message ?? 'Could not save measurements',
       })
+      showError(message ?? 'Could not save measurements')
     }
   }
 
