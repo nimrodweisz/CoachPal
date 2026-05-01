@@ -10,6 +10,21 @@ export const apiClient = axios.create({
   },
 })
 
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      axios.isAxiosError(error) &&
+      error.response?.status === 401 &&
+      window.location.pathname !== '/login'
+    ) {
+      window.location.href = '/login'
+    }
+
+    return Promise.reject(error)
+  },
+)
+
 export const apiEndpoints = {
   auth: {
     login: '/api/auth/login',
@@ -41,9 +56,28 @@ export type UserResponse = CreateUserPayload & {
   updatedAt: string
 }
 
+export type LoginPayload = {
+  email: string
+  password: string
+}
+
+export type LoginResponse = {
+  token: string
+  user: Omit<UserResponse, 'password'>
+}
+
 export type CreateCoachProfilePayload = {
   userId: string
   bio: string
+}
+
+export const loginUser = async (payload: LoginPayload) => {
+  const response = await apiClient.post<LoginResponse>(
+    apiEndpoints.auth.login,
+    payload,
+  )
+
+  return response.data
 }
 
 export const createUser = async (payload: CreateUserPayload) => {

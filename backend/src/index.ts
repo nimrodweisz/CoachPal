@@ -2,6 +2,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
+import authRoutes from './routes/authRoutes.js'
 import coachProfileRoutes from './routes/coachProfileRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 
@@ -9,7 +10,9 @@ dotenv.config()
 
 const app = express()
 const port = Number(process.env.PORT ?? 5000)
-const frontendOrigin = process.env.FRONTEND_ORIGIN 
+const frontendOrigins = (process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
 const mongoUri = process.env.MONGO_URI
 
 if (!mongoUri) {
@@ -18,10 +21,18 @@ if (!mongoUri) {
 
 app.use(
   cors({
-    origin: frontendOrigin,
+    origin: (origin, callback) => {
+      if (!origin || frontendOrigins.includes(origin)) {
+        callback(null, true)
+        return
+      }
+
+      callback(new Error('Not allowed by CORS'))
+    },
   }),
 )
 app.use(express.json())
+app.use('/api/auth', authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/coach-profiles', coachProfileRoutes)
 

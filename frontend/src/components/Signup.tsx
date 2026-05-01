@@ -58,12 +58,14 @@ function Signup() {
       window.location.href = '/login'
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
+        console.error(error.response?.data ?? error.message)
         setSubmitError(
           error.response?.data?.message ?? 'Could not create your account',
         )
         return
       }
 
+      console.error(error)
       setSubmitError('Could not create your account')
     }
   }

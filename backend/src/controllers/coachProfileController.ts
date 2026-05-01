@@ -1,9 +1,19 @@
 import type { Request, Response } from 'express'
+import mongoose from 'mongoose'
 import CoachProfile from '../models/CoachProfile.js'
 
 export const createCoachProfile = async (req: Request, res: Response) => {
-  const coachProfile = await CoachProfile.create(req.body)
-  res.status(201).json(coachProfile)
+  try {
+    const coachProfile = await CoachProfile.create(req.body)
+    res.status(201).json(coachProfile)
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      res.status(400).json({ message: error.message })
+      return
+    }
+
+    res.status(500).json({ message: 'Could not create coach profile' })
+  }
 }
 
 export const getCoachProfiles = async (_req: Request, res: Response) => {

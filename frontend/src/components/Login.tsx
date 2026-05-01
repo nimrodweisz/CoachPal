@@ -8,7 +8,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
+import { loginUser } from '../utils/apiEndpoints'
 
 type LoginFormValues = {
   email: string
@@ -16,6 +19,13 @@ type LoginFormValues = {
 }
 
 function Login() {
+  useEffect(() => {
+    localStorage.removeItem('jwt')
+    localStorage.removeItem('user')
+    localStorage.removeItem('coachPalUser')
+  }, [])
+  const [submitError, setSubmitError] = useState('')
+
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -27,8 +37,25 @@ function Login() {
     },
   })
 
-  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
+    setSubmitError('')
+
+    try {
+      const response = await loginUser(data)
+      localStorage.setItem('jwt', response.token)
+      localStorage.setItem('user', JSON.stringify(response.user))
+      localStorage.setItem('coachPalUser', JSON.stringify(response.user))
+      window.location.href = '/home'
+    } catch (error) {
+      if (axios.isAxiosError<{ message?: string }>(error)) {
+        setSubmitError(
+          error.response?.data?.message ?? 'Could not sign in',
+        )
+        return
+      }
+
+      setSubmitError('Could not sign in')
+    }
   }
 
   return (
@@ -49,6 +76,12 @@ function Login() {
             </Box>
 
             <Stack component="form" spacing={2.5} onSubmit={handleSubmit(onSubmit)}>
+              {submitError ? (
+                <Typography color="error" role="alert">
+                  {submitError}
+                </Typography>
+              ) : null}
+
               <TextField
                 autoComplete="email"
                 error={Boolean(errors.email)}
