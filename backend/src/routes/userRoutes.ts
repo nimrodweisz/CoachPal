@@ -6,10 +6,16 @@ import {
   getUsers,
   updateUser,
 } from '../controllers/userController.js'
+import { verifyJwt } from '../middleware/authMiddleware.js'
 
 const router = Router()
 
-router.route('/').get(getUsers).post(createUser)
-router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser)
+router.route('/').post(createUser)
+router.route('/').get(verifyJwt, getUsers)
+router
+  .route('/:id')
+  .get(verifyJwt, getUserById)
+  .patch(verifyJwt, updateUser)
+  .delete(verifyJwt, deleteUser)
 
 export default router
