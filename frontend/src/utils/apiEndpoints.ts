@@ -57,6 +57,10 @@ export const apiEndpoints = {
     byTraineeId: (traineeId: string) =>
       `/api/body-measurements/trainee/${traineeId}`,
   },
+  exercises: {
+    base: '/api/exercises',
+    byId: (id: string) => `/api/exercises/${id}`,
+  },
 } as const
 
 export type CreateUserPayload = {
@@ -158,6 +162,15 @@ export type BodyMeasurementUpdatePayload = {
   notes?: string
 }
 
+export type ExerciseResponse = {
+  _id: string
+  name: string
+  preview: string
+  muscleGroup: string
+  createdAt: string
+  updatedAt: string
+}
+
 export const loginUser = async (payload: LoginPayload) => {
   const response = await apiClient.post<LoginResponse>(
     apiEndpoints.auth.login,
@@ -235,6 +248,20 @@ export const updateBodyMeasurementsByTraineeId = async (
   const response = await apiClient.patch<BodyMeasurementResponse>(
     apiEndpoints.bodyMeasurements.byTraineeId(traineeId),
     payload,
+  )
+
+  return response.data
+}
+
+export const createExercise = async (payload: FormData) => {
+  const response = await apiClient.post<ExerciseResponse>(
+    apiEndpoints.exercises.base,
+    payload,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   )
 
   return response.data

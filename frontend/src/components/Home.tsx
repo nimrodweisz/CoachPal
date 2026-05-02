@@ -15,6 +15,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import AddExerciseModal from '../modals/AddExerciseModal'
 import AddTraineeModal from '../modals/AddTraineeModal'
 import { getTrainees, type TraineeResponse } from '../utils/apiEndpoints'
 import TraineeHome from './TraineeHome'
@@ -28,6 +29,7 @@ function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [isExerciseOpen, setIsExerciseOpen] = useState(false)
 
   if (user?.role === 'Trainee') {
     return <TraineeHome />
@@ -54,6 +56,14 @@ function Home() {
 
   const handleCloseCreate = () => {
     setIsCreateOpen(false)
+  }
+
+  const handleOpenExercise = () => {
+    setIsExerciseOpen(true)
+  }
+
+  const handleCloseExercise = () => {
+    setIsExerciseOpen(false)
   }
 
   const handleTraineeCreated = (trainee: TraineeResponse) => {
@@ -91,6 +101,9 @@ function Home() {
               <Stack direction="row" spacing={1.5}>
                 <Button onClick={handleOpenCreate} size="large" variant="contained">
                   Add trainee
+                </Button>
+                <Button onClick={handleOpenExercise} size="large" variant="contained">
+                  Add exercise to storage
                 </Button>
                 <Button onClick={handleLogout} size="large" variant="outlined">
                   Log out
@@ -172,6 +185,7 @@ function Home() {
         onCreated={handleTraineeCreated}
         open={isCreateOpen}
       />
+      <AddExerciseModal onClose={handleCloseExercise} open={isExerciseOpen} />
     </Box>
   )
 }
