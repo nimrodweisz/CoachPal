@@ -10,14 +10,33 @@ export const createExercise = async (req: Request, res: Response) => {
   const exercise = await Exercise.create({
     name: req.body.name,
     muscleGroup: req.body.muscleGroup,
-    preview: `/uploads/exercises/${req.file.filename}`,
+    preview: {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+    },
   })
+  const preview = exercise.preview
 
-  res.status(201).json(exercise)
+  if (!preview) {
+    res.status(500).json({ message: 'Preview image was not saved' })
+    return
+  }
+
+  res.status(201).json({
+    _id: exercise._id,
+    createdAt: exercise.createdAt,
+    muscleGroup: exercise.muscleGroup,
+    name: exercise.name,
+    previewContentType: preview.contentType,
+    previewUrl: `/api/exercises/${exercise._id.toString()}/preview`,
+    updatedAt: exercise.updatedAt,
+  })
 }
 
 export const getExercises = async (_req: Request, res: Response) => {
-  const exercises = await Exercise.find().sort({ createdAt: -1 })
+  const exercises = await Exercise.find()
+    .select('-preview.data')
+    .sort({ createdAt: -1 })
   res.json(exercises)
 }
 
@@ -30,4 +49,21 @@ export const getExerciseById = async (req: Request, res: Response) => {
   }
 
   res.json(exercise)
+}
+
+export const getExercisePreview = async (req: Request, res: Response) => {
+  const exercise = await Exercise.findById(req.params.id).select('preview')
+
+  if (!exercise) {
+    res.status(404).json({ message: 'Exercise not found' })
+    return
+  }
+
+  if (!exercise.preview) {
+    res.status(404).json({ message: 'Exercise preview not found' })
+    return
+  }
+
+  res.contentType(exercise.preview.contentType)
+  res.send(exercise.preview.data)
 }

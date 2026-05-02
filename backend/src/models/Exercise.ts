@@ -8,9 +8,14 @@ const exerciseSchema = new Schema(
       trim: true,
     },
     preview: {
-      type: String,
-      required: true,
-      trim: true,
+      data: {
+        type: Buffer,
+        required: true,
+      },
+      contentType: {
+        type: String,
+        required: true,
+      },
     },
     muscleGroup: {
       type: String,

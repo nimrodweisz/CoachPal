@@ -165,7 +165,8 @@ export type BodyMeasurementUpdatePayload = {
 export type ExerciseResponse = {
   _id: string
   name: string
-  preview: string
+  previewContentType: string
+  previewUrl: string
   muscleGroup: string
   createdAt: string
   updatedAt: string

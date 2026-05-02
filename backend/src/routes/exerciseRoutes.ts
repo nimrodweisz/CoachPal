@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   createExercise,
   getExerciseById,
+  getExercisePreview,
   getExercises,
 } from '../controllers/exerciseController.js'
 import { verifyJwt } from '../middleware/authMiddleware.js'
@@ -13,6 +14,7 @@ router
   .route('/')
   .get(verifyJwt, getExercises)
   .post(verifyJwt, uploadExercisePreview, createExercise)
+router.route('/:id/preview').get(verifyJwt, getExercisePreview)
 router.route('/:id').get(verifyJwt, getExerciseById)
 
 export default router
