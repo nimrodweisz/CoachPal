@@ -134,7 +134,7 @@ function Login() {
             <Typography className="signup-copy">
               New to CoachPal?{' '}
               <Link href="/signup" underline="hover">
-                Create an account
+                Createee an account
               </Link>
             </Typography>
           </Stack>
